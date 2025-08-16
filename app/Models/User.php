@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'table_number',
+        'last_login',
     ];
 
     /**
@@ -42,7 +46,46 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_login' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    // Scopes
+    public function scopeCustomers($query)
+    {
+        return $query->where('role', 'customer');
+    }
+
+    public function scopeKasirs($query)
+    {
+        return $query->where('role', 'kasir');
+    }
+
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    // Helper methods
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
+    public function isKasir()
+    {
+        return $this->role === 'kasir';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
